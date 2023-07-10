@@ -1,8 +1,9 @@
 /***
 |Description|Makes upgrading work ~correctly with (at least) Timimi or MTS 1.7.0 and above (tested on 2.9.2 → 2.9.3), adds optional upgrade autocheck on start; adds tiddlers and fields sorting so that the changes are easier to review|
-|Version|0.5.2|
-|Source|https://github.com/YakovL/TiddlyWiki_SimplifiedUpgradingPlugin/blob/master/SimplifiedUpgradingPlugin.js|
-|Author|Yakov Litvin|
+|Source     |https://github.com/YakovL/TiddlyWiki_SimplifiedUpgradingPlugin/blob/master/SimplifiedUpgradingPlugin.js|
+|Author     |Yakov Litvin|
+|Version    |0.5.2|
+|License    |[[MIT|https://github.com/YakovL/TiddlyWiki_YL_ExtensionsCollection/blob/master/Common%20License%20(MIT)]]|
 Installation of this plugin is standard: create tiddler, paste this as text, tag with {{{systemConfig}}}, save, reload.
 
 To start upgrading, use the usual way: open backstage, the "upgrade" tab and hit the "upgrade" button.
