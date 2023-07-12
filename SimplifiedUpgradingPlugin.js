@@ -1,8 +1,8 @@
 /***
-|Description|Makes upgrading work ~correctly with (at least) Timimi or MTS 1.7.0 and above (tested on 2.9.2 → 2.9.3), adds optional upgrade autocheck on start; adds tiddlers and fields sorting so that the changes are easier to review|
+|Description|Makes upgrading work ~correctly with (at least) Timimi or MTS 1.7.0 and above (tested on 2.6.5,2.9.2,2.9.3 → 2.9.3,2.9.4), adds optional upgrade autocheck on start; adds tiddlers and fields sorting so that the changes are easier to review|
 |Source     |https://github.com/YakovL/TiddlyWiki_SimplifiedUpgradingPlugin/blob/master/SimplifiedUpgradingPlugin.js|
 |Author     |Yakov Litvin|
-|Version    |0.5.2|
+|Version    |0.6.0|
 |License    |[[MIT|https://github.com/YakovL/TiddlyWiki_YL_ExtensionsCollection/blob/master/Common%20License%20(MIT)]]|
 Installation of this plugin is standard: create tiddler, paste this as text, tag with {{{systemConfig}}}, save, reload.
 
@@ -198,12 +198,17 @@ if(isBelow2_9_3) {
 }
 
 // fix the bug introduced in 2.9.3 and fixed in 2.9.4 version
-if(!isBelow2_9_3 && !isAbove2_9_3) {
+if(!isAbove2_9_3) {
+	// not present before 2.9.2
+	config.macros.upgrade.getSourceURL = function() {
+		return config.options.txtUpgradeCoreURI || config.macros.upgrade.source
+	}
+
 	config.macros.upgrade.onClickUpgrade = function(e)
 	{
 		var me = config.macros.upgrade
 		var w = new Wizard(this)
-		if(!window.allowSave()) {
+		if(window.allowSave && !window.allowSave()) {
 			alert(me.errorCantUpgrade)
 			return false
 		}
