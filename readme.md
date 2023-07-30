@@ -5,3 +5,6 @@ It also adds optional upgrade autocheck on start; tiddlers and fields sorting so
 
 It is tested at least on upgrading 2.6.5, 2.9.2, 2.9.3 → 2.9.3, 2.9.4.
 Presumably, once it covers more savers, it will be merged into the core.
+
+Available to install via [ExtensionsExplorerPlugin](https://github.com/YakovL/TiddlyWiki_ExtensionsExplorerPlugin),
+like many others (to find it, install the central collection and YLExtensionsCollection from it).
