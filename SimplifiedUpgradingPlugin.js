@@ -2,7 +2,7 @@
 |Description|Makes upgrading work ~correctly with (at least) Timimi or MTS 1.7.0 and above (tested on 2.6.5,2.9.2,2.9.3 → 2.9.3,2.9.4), adds optional upgrade autocheck on start; adds tiddlers and fields sorting so that the changes are easier to review|
 |Source     |https://github.com/YakovL/TiddlyWiki_SimplifiedUpgradingPlugin/blob/master/SimplifiedUpgradingPlugin.js|
 |Author     |Yakov Litvin|
-|Version    |0.6.0|
+|Version    |0.6.1|
 |License    |[[MIT|https://github.com/YakovL/TiddlyWiki_YL_ExtensionsCollection/blob/master/Common%20License%20(MIT)]]|
 Installation of this plugin is standard: create tiddler, paste this as text, tag with {{{systemConfig}}}, save, reload.
 
@@ -17,8 +17,7 @@ Configuration:
 config.options.txtWaitSavingSeconds = config.options.txtWaitSavingSeconds || "5"; // no handler for number options
 
 // a fix for older TWs, like 2.7.1
-if(config.macros.upgrade.source == 'http://tiddlywiki-releases.tiddlyspace.com/upgrade')
-	config.macros.upgrade.source = 'https://classic.tiddlywiki.com/upgrade/'
+config.macros.upgrade.source = 'https://classic.tiddlywiki.com/upgrade/'
 
 var upgradingEventBus = {
 	handlers: {},
