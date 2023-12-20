@@ -2,7 +2,7 @@
 |Description|Makes upgrading work ~correctly with (at least) Timimi or MTS 1.7.0 and above (tested on 2.6.5,2.9.2,2.9.3 → 2.9.3,2.9.4), adds optional upgrade autocheck on start; adds tiddlers and fields sorting so that the changes are easier to review|
 |Source     |https://github.com/YakovL/TiddlyWiki_SimplifiedUpgradingPlugin/blob/master/SimplifiedUpgradingPlugin.js|
 |Author     |Yakov Litvin|
-|Version    |0.6.1|
+|Version    |0.7.0|
 |License    |[[MIT|https://github.com/YakovL/TiddlyWiki_YL_ExtensionsCollection/blob/master/Common%20License%20(MIT)]]|
 Installation of this plugin is standard: create tiddler, paste this as text, tag with {{{systemConfig}}}, save, reload.
 
@@ -14,7 +14,7 @@ Configuration:
 <<option chkAutocheckUpgradeOnStart>> check for upgrades on start
 ***/
 //{{{
-config.options.txtWaitSavingSeconds = config.options.txtWaitSavingSeconds || "5"; // no handler for number options
+config.options.txtWaitSavingSeconds = config.options.txtWaitSavingSeconds || "5" // no handler for number options
 
 // a fix for older TWs, like 2.7.1
 config.macros.upgrade.source = 'https://classic.tiddlywiki.com/upgrade/'
@@ -174,8 +174,8 @@ config.macros.upgrade.onLoadCore = function(status, params, responseText, url, x
 		config.macros.simplifiedUpgrade.start(responseText)
 	}
 
-	var step2 = [me.step2Html_downgrade, me.step2Html_restore, me.step2Html_upgrade][compareVersions(version, newVer) + 1];
-	w.addStep(me.step2Title, step2.format([formatVersion(newVer), formatVersion(version)]));
+	var step2 = [me.step2Html_downgrade, me.step2Html_restore, me.step2Html_upgrade][compareVersions(version, newVer) + 1]
+	w.addStep(me.step2Title, step2.format([formatVersion(newVer), formatVersion(version)]))
 	w.setButtons([
 		{ caption: me.startLabel, tooltip: me.startPrompt, onClick: onStartUpgrade },
 		{ caption: me.cancelLabel, tooltip: me.cancelPrompt, onClick: me.onCancel }
@@ -196,56 +196,54 @@ if(isBelow2_9_3) {
 	}
 }
 
-// fix the bug introduced in 2.9.3 and fixed in 2.9.4 version
-if(!isAbove2_9_3) {
-	// not present before 2.9.2
-	config.macros.upgrade.getSourceURL = function() {
-		return config.options.txtUpgradeCoreURI || config.macros.upgrade.source
-	}
+// not present before 2.9.2
+config.macros.upgrade.getSourceURL = config.macros.upgrade.getSourceURL || function() {
+	return config.options.txtUpgradeCoreURI || config.macros.upgrade.source;
+}
 
-	config.macros.upgrade.onClickUpgrade = function(e)
-	{
-		var me = config.macros.upgrade
-		var w = new Wizard(this)
-		if(window.allowSave && !window.allowSave()) {
-			alert(me.errorCantUpgrade)
-			return false
-		}
-		if(story.areAnyDirty() || store.isDirty()) {
-			alert(me.errorNotSaved)
-			return false
-		}
-
-		w.setButtons([], me.statusPreparingBackup)
-		var localPath = getLocalPath(document.location.toString())
-		var backupPath = getBackupPath(localPath, me.backupExtension)
-		var original = loadOriginal(localPath)
-
-		w.setButtons([], me.statusSavingBackup)
-		var backupSuccess = copyFile(backupPath, localPath) || saveFile(backupPath, original)
-		//# fails of backup saving with TF are not reported, resulting in empty TW after upgrade
-		if(!backupSuccess) {
-			w.setButtons([], me.errorSavingBackup)
-			alert(me.errorSavingBackup)
-			return false
-		}
-		w.setValue("backupPath", backupPath)
-
-		w.setButtons([], me.statusLoadingCore)
-		var sourceURL = me.getSourceURL()
-		ajaxReq({
-			type: "GET",
-			url: sourceURL,
-			processData: false,
-			success: function(data, textStatus, jqXHR) {
-				me.onLoadCore(true, w, jqXHR.responseText, sourceURL, jqXHR)
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				me.onLoadCore(false, w, null, sourceURL, jqXHR)
-			}
-		})
+// fix the bug introduced in 2.9.3 and fixed in 2.9.4 version;
+// since 2.10.0, overriding is necessary to avoid the backup loading check irrelevant for this method
+config.macros.upgrade.onClickUpgrade = function(e) {
+	var me = config.macros.upgrade
+	var w = new Wizard(this)
+	if(window.allowSave && !window.allowSave()) {
+		alert(me.errorCantUpgrade)
 		return false
 	}
+	if(story.areAnyDirty() || store.isDirty()) {
+		alert(me.errorNotSaved)
+		return false
+	}
+	
+	w.setButtons([], me.statusPreparingBackup)
+	var localPath = getLocalPath(document.location.toString())
+	var backupPath = getBackupPath(localPath, me.backupExtension)
+	var original = loadOriginal(localPath)
+	
+	w.setButtons([], me.statusSavingBackup)
+	var backupSuccess = copyFile(backupPath, localPath) || saveFile(backupPath, original)
+	//# fails of backup saving with TF are not reported, resulting in empty TW after upgrade
+	if(!backupSuccess) {
+		w.setButtons([], me.errorSavingBackup)
+		alert(me.errorSavingBackup)
+		return false
+	}
+	w.setValue("backupPath", backupPath)
+	
+	w.setButtons([], me.statusLoadingCore)
+	var sourceURL = me.getSourceURL()
+	ajaxReq({
+		type: "GET",
+		url: sourceURL,
+		processData: false,
+		success: function(data, textStatus, jqXHR) {
+			me.onLoadCore(true, w, jqXHR.responseText, sourceURL, jqXHR)
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			me.onLoadCore(false, w, null, sourceURL, jqXHR)
+		}
+	})
+	return false
 }
 
 // auto-checking available upgrade
@@ -260,7 +258,9 @@ config.macros.upgrade.init = function() {
 	})
 }
 
-if(!isAbove2_9_3) {
+// sort fields and tiddlers to make html deterministic and avoid unmotivated diffs
+// (not introduced into the core yet, nor tested if differs from MTS's granulated saving results)
+//if(!isAbove2_9_3) {
 	SaverBase.prototype.externalize = function(store) {
 		var results = [];
 		var i, tiddlers = store.getTiddlers("title");
@@ -276,8 +276,7 @@ if(!isAbove2_9_3) {
 		return results.join("\n");
 	};
 
-	TW21Saver.prototype.externalizeTiddler = function(store, tiddler)
-	{
+	TW21Saver.prototype.externalizeTiddler = function(store, tiddler) {
 		try {
 			var usePre = config.options.chkUsePreForStorage;
 			var created = tiddler.created;
@@ -313,5 +312,5 @@ if(!isAbove2_9_3) {
 			throw exceptionText(ex, config.messages.tiddlerSaveError.format([tiddler.title]));
 		}
 	};
-}
+//}
 //}}}
