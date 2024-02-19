@@ -2,7 +2,7 @@
 |Description|Makes upgrading work ~correctly with (at least) Timimi or MTS 1.7.0 and above (tested on 2.6.5,2.9.2,2.9.3 → 2.9.3,2.9.4), adds optional upgrade autocheck on start; adds tiddlers and fields sorting so that the changes are easier to review|
 |Source     |https://github.com/YakovL/TiddlyWiki_SimplifiedUpgradingPlugin/blob/master/SimplifiedUpgradingPlugin.js|
 |Author     |Yakov Litvin|
-|Version    |0.7.0|
+|Version    |0.7.1|
 |License    |[[MIT|https://github.com/YakovL/TiddlyWiki_YL_ExtensionsCollection/blob/master/Common%20License%20(MIT)]]|
 Installation of this plugin is standard: create tiddler, paste this as text, tag with {{{systemConfig}}}, save, reload.
 
@@ -248,6 +248,8 @@ config.macros.upgrade.onClickUpgrade = function(e) {
 
 // auto-checking available upgrade
 config.macros.upgrade.init = function() {
+	if(readOnly) return
+
 	config.macros.simplifiedUpgrade.getNewCore(function(coreAsText) {
 		var me = config.macros.upgrade
 		var availableVersion = me.extractVersion(coreAsText)
