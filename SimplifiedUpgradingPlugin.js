@@ -219,7 +219,7 @@ config.macros.upgrade.onClickUpgrade = function(e) {
 	var localPath = getLocalPath(document.location.toString())
 	var backupPath = getBackupPath(localPath, me.backupExtension)
 	var original = loadOriginal(localPath)
-	
+
 	w.setButtons([], me.statusSavingBackup)
 	var backupSuccess = copyFile(backupPath, localPath) || saveFile(backupPath, original)
 	//# fails of backup saving with TF are not reported, resulting in empty TW after upgrade
@@ -229,7 +229,7 @@ config.macros.upgrade.onClickUpgrade = function(e) {
 		return false
 	}
 	w.setValue("backupPath", backupPath)
-	
+
 	w.setButtons([], me.statusLoadingCore)
 	var sourceURL = me.getSourceURL()
 	ajaxReq({
@@ -264,19 +264,19 @@ config.macros.upgrade.init = function() {
 // (not introduced into the core yet, nor tested if differs from MTS's granulated saving results)
 //if(!isAbove2_9_3) {
 	SaverBase.prototype.externalize = function(store) {
-		var results = [];
-		var i, tiddlers = store.getTiddlers("title");
+		var results = []
+		var i, tiddlers = store.getTiddlers("title")
 		if(!config.options.chkAvoidSortingAll) {
 			tiddlers.sort(function(t1, t2) {
 				return t1.title.localeCompare(t2.title)
-			});
+			})
 		}
 		for(i = 0; i < tiddlers.length; i++) {
 			if(!tiddlers[i].doNotSave())
-				results.push(this.externalizeTiddler(store, tiddlers[i]));
+				results.push(this.externalizeTiddler(store, tiddlers[i]))
 		}
-		return results.join("\n");
-	};
+		return results.join("\n")
+	}
 
 	TW21Saver.prototype.externalizeTiddler = function(store, tiddler) {
 		try {
